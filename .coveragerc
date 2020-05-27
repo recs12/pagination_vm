@@ -1,0 +1,15 @@
+[run]
+source =
+    pagination_vm
+    tests
+branch = True
+omit =
+    pagination_vm/cli.py
+
+[report]
+exclude_lines =
+    no cov
+    no qa
+    noqa
+    pragma: no cover
+    if __name__ == .__main__.:
