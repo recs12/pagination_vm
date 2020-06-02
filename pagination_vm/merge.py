@@ -14,8 +14,6 @@ def paginate_pdf(pdf_name, number_page, pagination_template):
     stream_pagination = open(pagination_template, "rb")
     pagination = PdfFileReader(stream_pagination)
 
-    # TODO: adjuste the start and end of the pagination
-
     for i in range(number_page):
         manuals_page = manuals.getPage(i)  # pageNumber: 0
         pagination_page = pagination.getPage(i)
@@ -45,4 +43,4 @@ def paginate_pdf(pdf_name, number_page, pagination_template):
     stream_manuals.close()
     stream_pagination.close()
 
-    print(f"[CREATED] {pdf_out}")
+    print(f"{pdf_out} copied to paginatedPDFs\n")

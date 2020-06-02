@@ -1,0 +1,1 @@
+pyinstaller --onfile -i=pacman.ico \pagination\__main__.py
