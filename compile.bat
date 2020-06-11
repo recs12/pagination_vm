@@ -1,1 +1,1 @@
-pyinstaller --onfile -i=pacman.ico \pagination\__main__.py
+pyinstaller --onefile -i=pacman.ico --name=pagination .\pagination_vm\__main__.py

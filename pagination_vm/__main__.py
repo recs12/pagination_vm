@@ -6,7 +6,7 @@ import click
 from PyPDF4 import PdfFileReader
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
-
+from logzero import logger
 from pagination_vm.merge import paginate_pdf
 from pagination_vm.info import headlines
 
@@ -21,7 +21,7 @@ def confirmation(func):
         func()
 
 
-def create_template_pagination(name_file, total_pages, index):
+def create_template_pagination(name_file, total_pages, index, subtitle):
     c = canvas.Canvas(name_file)
     c.setPageSize(
         (17*inch, 11*inch) # set tabloid format
@@ -30,11 +30,16 @@ def create_template_pagination(name_file, total_pages, index):
         c.showPage() # Add one or two empty page at beginning of the template
     for _ in range(total_pages-index):
         page_num = c.getPageNumber()
-        text = "%s/%s" % (page_num -index, total_pages-index)
+        text = "%s/%s" % (page_num-index , total_pages-index)
         c.drawString(
             16.4*inch,
             0.15*inch,
             text,
+        )
+        c.drawString(
+            1*inch,
+            0.15*inch,
+            subtitle,
         )
         c.showPage()
     c.save()
@@ -45,7 +50,7 @@ def getDocuments(content):
     else:
         return content
 
-@click.command(help="Add pagination 1/n at bottom-right of a pdf file.")
+@click.command(help="Add pagination 1/n et title at bottom of a pdf file.")
 @click.option('--index', default=1, help='Number of indexed pages.')
 @click.argument("documents",  nargs=-1) # tuple
 def add_footer(documents, index):
@@ -69,6 +74,7 @@ def add_footer(documents, index):
                     "pagination.pdf",
                     number_total_of_pages,
                     index,
+                    subtitle=doc[:-4],
                 )
 
                 # Create the new pdf merging two layers:  footer + manual
@@ -81,9 +87,9 @@ def add_footer(documents, index):
                 # Delete the pdf template
                 os.remove("pagination.pdf")
     except AssertionError as a:
-        print(a)
+        logger.exception(a)
     except FileNotFoundError as e:
-        print(e)
+        logger.exception(e)
     else:
         pass
     finally:
@@ -95,7 +101,3 @@ def add_footer(documents, index):
 if __name__ == "__main__":
     print(headlines)
     confirmation(add_footer)
-
-#TODO: implement library prompt_toolkit, click option
-#TODO: Add permissions
-#TODO: generate .exe
